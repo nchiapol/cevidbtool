@@ -31,7 +31,7 @@ class TokenAction(object):
 def _handle_requests_error(error):
     """ raise RequestsError with helpful message """
     # check for signature of missing certificate file
-    cert_errro = False
+    cert_error = False
     try:
         if type(error.args[0].args[0]) == IOError:
             cert_error = True
@@ -40,7 +40,7 @@ def _handle_requests_error(error):
     if cert_error:
         raise RequestsError("SSLError: Zertifikat-Datei nicht gefunden.")
     # raise with general message, if signature not known
-    raise RequestsError(repr(e))
+    raise RequestsError(repr(error))
 
 
 class CeviDB(object):
@@ -72,7 +72,8 @@ class CeviDB(object):
             base url for database (default: https://db.cevi.ch)
         cert_file : string
             certificate file used for SSL verification including path
-            (default: 'cacert.pem' in the present working directory.)
+            (default: 'cacert.pem')
+            see set_cert_file() for details
 
         """
         # ensure one trailing slash for db url
@@ -80,7 +81,7 @@ class CeviDB(object):
         self._email      = email
         self._auth_token = None
         self._id         = None
-        self._cert_file  = cert_file
+        self._cert_file  = str(cert_file)
 
     def set_cert_file(self, filename):
         """ set a new certificate file used

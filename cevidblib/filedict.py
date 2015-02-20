@@ -212,7 +212,12 @@ class XlsxWriter(object):
         sort_col = self._cfg.get_column_key("last_name")
         sorted_names = []
         for p_key, p_person in persons.items():
-            sorted_names.append(p_person[sort_col]+"|"+p_key)
+            try:
+                sorted_names.append(p_person[sort_col]+"|"+p_key)
+            except TypeError:
+                # entry without a value in the sort_col
+                # -> fake a value that gets sorted last
+                sorted_names.append("zzz|"+p_key)
         sorted_names.sort()
         # write data for all persons to file (sorted)
         for nr, pers in enumerate(sorted_names):
