@@ -81,7 +81,7 @@ class CeviDB(object):
         self._email      = email
         self._auth_token = None
         self._id         = None
-        self._cert_file  = str(cert_file)
+        self._cert_file  = cert_file
 
     def set_cert_file(self, filename):
         """ set a new certificate file used

@@ -97,6 +97,18 @@ class TestsWithoutDB(unittest.TestCase):
         self.db.get_request("")
         self.assertEqual(calls[2].kwargs["verify"], "../test.pem")
 
+    def test_certificate_initNone(self):
+        """ check initialsing certificate to None works """
+        del self.db
+        # create new db object with None as certificate argument
+        self.db = cdb.CeviDB(self.user, self.url, None)
+        # do usual config
+        self.db.set_auth_token("abc")
+        calls = self.mock.calls
+        # test request
+        self.db.get_request("")
+        self.assertIsNone(calls[0].kwargs["verify"])
+
     def test_get_request_token(self):
         """ ensure RuntimeError gets raised if no auth-token is set """
         with self.assertRaises(RuntimeError):
