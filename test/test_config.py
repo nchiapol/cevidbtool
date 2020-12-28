@@ -43,7 +43,7 @@ class ConfigTesterFixture(unittest.TestCase):
                           'D': "data", 'E': "data", 'F': "data", 'G': "formula"}
         value_expected = {'A': "last_name", 'B': "first_name", 'C': "id",
                 'D': "", 'E': "", 'F': "", 'G': "=SUM(D{row}:F{row})"}
-        self.assertItemsEqual(self.settings.columns.keys(), keys_expected)
+        self.assertCountEqual(list(self.settings.columns.keys()), keys_expected)
         for key in keys_expected:
             col = self.settings.columns[key]
             self.assertIsInstance(col, cfg.ColConfig)

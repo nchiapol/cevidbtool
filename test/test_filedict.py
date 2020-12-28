@@ -86,8 +86,8 @@ class TestReader(unittest.TestCase):
     def test_cellaccess(self):
         """ cells can be accessed correctly """
         # pairs: (value, expect)
-        tests = [("A1", u"Testdatei für cevidblib"),
-                 ("F4", u"Posten 3"),
+        tests = [("A1", "Testdatei für cevidblib"),
+                 ("F4", "Posten 3"),
                  ("D6", 10)
                  ]
         for val, exp in tests:
@@ -126,7 +126,7 @@ class TestCopyWriter(unittest.TestCase):
         wcell = self.writer._wb.active[cell]
         rcell = self.reader.cell(cell)
         self.assertEqual(wcell.value, rcell,
-                u"Difference in cell {cell}: {wv} != {rv}".format(
+                "Difference in cell {cell}: {wv} != {rv}".format(
                     cell=cell, wv=wcell.value, rv=rcell
                 ))
 

@@ -10,7 +10,7 @@ License: GNU General Public License version 3,
 config.py - classes to manage configuration
 
 """
-import ConfigParser
+import configparser
 
 class ColConfig(object):
     """ object to represent column configuration
@@ -68,7 +68,7 @@ class Settings(object):
         # open and read file
         if filename == None:
             filename = "config.ini"
-        self._parser = ConfigParser.RawConfigParser()
+        self._parser = configparser.RawConfigParser()
         loaded = self._parser.read(filename)
         if len(loaded) == 0:
             raise IOError("Failed to load config file")
@@ -96,13 +96,13 @@ class Settings(object):
         self.columns = col_def
 
         #   create list of column keys: ['A', 'B', ...]
-        self.column_keys = self.columns.keys()
+        self.column_keys = list(self.columns.keys())
         self.column_keys.sort()
 
         #   create list with pairs containing (key, name)
         #   for all person columns: [('A', 'id'), ('B', 'last_name'), ...]
         self.pers_cols = []
-        for key, item in self.columns.iteritems():
+        for key, item in self.columns.items():
             if item.group == "person":
                 self.pers_cols.append((key, item.value))
 
@@ -120,7 +120,7 @@ class Settings(object):
             if no column has the pre-defined value searched for
 
         """
-        for key, item in self.columns.iteritems():
+        for key, item in self.columns.items():
             if item.value == value:
                 return key
         raise ValueError(value+" not found in configuration")

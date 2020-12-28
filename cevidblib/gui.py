@@ -7,7 +7,7 @@ License: GNU General Public License version 3,
          or (at your option) any later version.
 
 """
-from __future__ import division, print_function, unicode_literals
+
 
 import wx
 from wx.lib.rcsizer import RowColSizer
@@ -19,7 +19,7 @@ class MainFrame(wx.Frame):
         """ main gui window """
         self._master = master
 
-        wx.Frame.__init__(self, parent, title=title, size=(300,135))
+        wx.Frame.__init__(self, parent, title=title, size=(300,165))
         panel = wx.Panel(self)
         layout_table = RowColSizer()
         layout_table.AddGrowableCol(2)
@@ -53,7 +53,7 @@ class MainFrame(wx.Frame):
 
     def chooseFile(self, event):
         """ file dialog """
-        dlg = wx.FileDialog(self, "Datei auswählen", os.path.expanduser("~"), "", "*.*", wx.OPEN)
+        dlg = wx.FileDialog(self, "Datei auswählen", os.path.expanduser("~"), "", "*.*", wx.FD_OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             self.file.WriteText(os.path.join(dlg.GetDirectory(),dlg.GetFilename()))
         dlg.Destroy()
@@ -67,7 +67,7 @@ class MainFrame(wx.Frame):
                              self.file.GetValue()
                             )
         except Exception as e:
-            message = (e.message, "Error")
+            message = (str(e.args), "Error")
         dlg = wx.MessageDialog( self, message[0], message[1])
         dlg.ShowModal()
         dlg.Destroy()

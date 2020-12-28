@@ -10,7 +10,7 @@ License: GNU General Public License version 3,
 db.py -- class to handel connection to CeviDB
 
 """
-from __future__ import division, print_function, unicode_literals
+
 import requests
 
 
@@ -26,21 +26,6 @@ class TokenAction(object):
         """ define function and endpoint for action """
         self.func = function
         self.end = endpoint
-
-
-def _handle_requests_error(error):
-    """ raise RequestsError with helpful message """
-    # check for signature of missing certificate file
-    cert_error = False
-    try:
-        if type(error.args[0].args[0]) == IOError:
-            cert_error = True
-    except Exception:
-        pass
-    if cert_error:
-        raise RequestsError("SSLError: Zertifikat-Datei nicht gefunden.")
-    # raise with general message, if signature not known
-    raise RequestsError(repr(error))
 
 
 class CeviDB(object):
@@ -137,10 +122,7 @@ class CeviDB(object):
                     mail=self._email,
                     pw=password,
                     )
-        try:
-            res = action.func(url, verify=self._cert_file)
-        except requests.exceptions.SSLError as e:
-            _handle_requests_error(e)
+        res = action.func(url, verify=self._cert_file)
         res.raise_for_status()
         user = res.json()["people"][0]
         self._auth_token = user["authentication_token"]
@@ -289,10 +271,7 @@ class CeviDB(object):
                     )
         if query_string is not None:
             url += "&"+query_string
-        try:
-            res = requests.get(url, verify=self._cert_file)
-        except requests.exceptions.SSLError as e:
-            _handle_requests_error(e)
+        res = requests.get(url, verify=self._cert_file)
         # internal redirects
         #   e.g. people/{pid}.json -> groups/{gid}/people/{pid}.json
         # do not pass the query string on and therefore result in

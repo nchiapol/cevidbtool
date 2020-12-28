@@ -11,7 +11,7 @@ ohne die zusätzlichen Informationen zu verändern.
 Installation
 ------------
 
-* Abhängigkeiten
+* Abhängigkeiten  
   Damit das CeviDB Tool funktioniert müssen die folgenden
   Software-Pakete installiert sein:
 

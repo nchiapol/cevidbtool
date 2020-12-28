@@ -7,7 +7,7 @@ License: GNU General Public License version 3,
          or (at your option) any later version.
 
 """
-from __future__ import division, print_function, unicode_literals
+
 
 from path_helper import add_path
 add_path()

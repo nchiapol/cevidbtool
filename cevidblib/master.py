@@ -9,11 +9,11 @@ License: GNU General Public License version 3,
 master.py -- main class coordinating db-query and file update
 
 """
-from __future__ import division, print_function, unicode_literals
-from filedict import XlsxReader, XlsxWriter
-from db import CeviDB
+
+from .filedict import XlsxReader, XlsxWriter
+from .db import CeviDB
 import os, time
-from config import Settings
+from .config import Settings
 
 class Master(object):
     """ object to handle backups, and calls to other objects """

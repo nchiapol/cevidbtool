@@ -47,7 +47,7 @@ Skipping Tests with Live DB as password file is missing!\n\
     def test_cert_error(self):
         """ missing certificat file raises error """
         self.db.set_cert_file("inexistent_file")
-        with self.assertRaises(cdb.RequestsError):
+        with self.assertRaises(OSError):
             self.db.connect(self.pw)
 
     def test_login(self):

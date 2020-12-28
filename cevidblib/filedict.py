@@ -10,7 +10,7 @@ License: GNU General Public License version 3,
 filedict.py -- classes to read and write xlsx files
 
 """
-from __future__ import division, print_function, unicode_literals
+
 import openpyxl
 
 def row2person(row):
@@ -50,7 +50,7 @@ def to_coord(col, row):
     """
     if type(col) == int:
         col = openpyxl.cell.get_column_letter(col)
-    return u"{0}{1}".format(col, row)
+    return "{0}{1}".format(col, row)
 
 class XlsxReader(object):
     """ Class to read xlsx file with person data from CeviDB """
@@ -83,7 +83,7 @@ class XlsxReader(object):
                first=self._cfg.column_keys[0],
                last=self._cfg.column_keys[-1], row=row
             )
-            person = row2person(self.active.iter_rows(selection).next())
+            person = row2person(next(self.active.iter_rows(selection)))
             self._persons[pers_id] = person
             row += 1
         self._start_footer = row
@@ -188,10 +188,10 @@ class XlsxWriter(object):
         if self._start_footer < self._start_persons:
             raise RuntimeError("start of footer not defined")
         old_footer_start = self._old_file.start_footer
-        old_footer_rows = range(old_footer_start,
-                old_footer_start+self._cfg.footer_lines)
-        new_footer_rows = range(self._start_footer,
-                self._start_footer+self._cfg.footer_lines)
+        old_footer_rows = list(range(old_footer_start,
+                old_footer_start+self._cfg.footer_lines))
+        new_footer_rows = list(range(self._start_footer,
+                self._start_footer+self._cfg.footer_lines))
         for old_row, new_row in zip(old_footer_rows, new_footer_rows):
             for col in self._cfg.column_keys:
                 new_cell = to_coord(col, new_row)
@@ -211,7 +211,7 @@ class XlsxWriter(object):
         # entrys have the form "lastname|id"
         sort_col = self._cfg.get_column_key("last_name")
         sorted_names = []
-        for p_key, p_person in persons.items():
+        for p_key, p_person in list(persons.items()):
             try:
                 sorted_names.append(p_person[sort_col]+"|"+p_key)
             except TypeError:

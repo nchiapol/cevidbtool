@@ -11,7 +11,7 @@ test_master.py -- test cases for cevidblib.master
 
 """
 # ensure path is set correctly
-from  path_helper import add_path
+from path_helper import add_path
 add_path()
 add_path("../imports")
 
@@ -51,8 +51,8 @@ class ConfigTesterFixture(unittest.TestCase):
         """ update_persons joins test lists correctly """
         values = dict(PERSONS)
         expect = dict(PERSONS)
-        expect["4"] = {"A": u"Neue", "B": u"Eine", "C": "4",
-         "D": "", "E": "", "F": "", "G": u''}
+        expect["4"] = {"A": "Neue", "B": "Eine", "C": "4",
+         "D": "", "E": "", "F": "", "G": ''}
         self.master.update_persons(values, RESULT_DB)
         self.assertDictEqual(values, expect)
 

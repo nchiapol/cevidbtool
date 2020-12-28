@@ -13,12 +13,12 @@ constants.py -- constants usefull for tests
 
 # data from test file
 PERSONS = {
-    "1": {"A": u"Jemand", "B": u"Irgend", "C": 1,
-        "D": 10, "E": 20, "F": 30, "G": u'=SUM(D6:F6)'},
-    "2": {"A": u"Jemand", "B": u"Noch", "C": 2,
-         "D":  5, "E": 25, "F": 20, "G": u'=SUM(D7:F7)'},
-    "3": {"A": u"Anders", "B": u"Jemand", "C": 3,
-         "D": 14, "E": 12, "F": 16, "G": u'=SUM(D5:F5)'},
+    "1": {"A": "Jemand", "B": "Irgend", "C": 1,
+        "D": 10, "E": 20, "F": 30, "G": '=SUM(D6:F6)'},
+    "2": {"A": "Jemand", "B": "Noch", "C": 2,
+         "D":  5, "E": 25, "F": 20, "G": '=SUM(D7:F7)'},
+    "3": {"A": "Anders", "B": "Jemand", "C": 3,
+         "D": 14, "E": 12, "F": 16, "G": '=SUM(D5:F5)'},
 }
 
 # example for DB
