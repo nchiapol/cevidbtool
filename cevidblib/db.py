@@ -245,7 +245,7 @@ class CeviDB(object):
         endpoint = "groups/{gid}.json".format(gid=group_id)
         return self.get_request(endpoint).json()
 
-    def get_request(self, endpoint, redirect=0):
+    def get_request(self, endpoint, query_string=None, redirect=1):
         """ general get request
 
         Parameters
@@ -253,6 +253,10 @@ class CeviDB(object):
         endpoint : string
             part of request url between domain (db_root) and query string
             or url including domain but without query string
+        query_string : string
+            query_string without preceding '?' or '&'
+            (this will be combined with the authentication variables
+            to form the final query string)
         redirect : int
             counter to limit number of redirects
 
@@ -283,6 +287,8 @@ class CeviDB(object):
                     mail=self._email,
                     token=self._auth_token
                     )
+        if query_string is not None:
+            url += "&"+query_string
         try:
             res = requests.get(url, verify=self._cert_file)
         except requests.exceptions.SSLError as e:
@@ -292,8 +298,8 @@ class CeviDB(object):
         # do not pass the query string on and therefore result in
         # a "401 Authorization Required" error.
         if res.url != url:
-            if redirect == 0:
-                res = self.get_request(res.url, redirect+1)
+            if redirect > 0:
+                res = self.get_request(res.url, redirect=redirect-1)
             else:
                 raise RuntimeError("Too many redirects")
         res.raise_for_status()
