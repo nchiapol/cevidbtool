@@ -11,18 +11,10 @@ ohne die zusätzlichen Informationen zu verändern.
 Installation
 ------------
 
-* Abhängigkeiten  
-  Damit das CeviDB Tool funktioniert müssen die folgenden
-  Software-Pakete installiert sein:
-
-    * Python (2.7.x):     https://www.python.org/
-    * wxPython (3.0.1.1): http://www.wxpython.org/
-    * openpyxl (2.1.4):   https://pypi.python.org/pypi/openpyxl
-    * requests (2.3.0):   https://pypi.python.org/pypi/requests
-
-  Die Versionsnummern bezeichnen die für die Entwicklung verwendeten
-  Versionen.
-
+* Install Python, pip and pipenv for your OS (you most likely want to install python into `PATH`)
+* download/clone this repository
+* run `pipenv install -r requirements.txt` (you might need to adjust the version of `wxpython` if pipenv fails to build it)
+* run `pipenv run python cevidbtool.py` (or use the corresponding helper-script for your os)
 
 Nutzung
 -------
