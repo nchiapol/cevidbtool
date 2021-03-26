@@ -38,11 +38,11 @@ class ConfigTesterFixture(unittest.TestCase):
         self.assertEqual(self.settings.freeze_column, "D")
 
     def test_column_config(self):
-        keys_expected = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-        group_expected = {'A': "person", 'B': "person", 'C': "person",
-                          'D': "data", 'E': "data", 'F': "data", 'G': "formula"}
-        value_expected = {'A': "last_name", 'B': "first_name", 'C': "id",
-                'D': "", 'E': "", 'F': "", 'G': "=SUM(D{row}:F{row})"}
+        keys_expected = [1, 2, 3, 4, 5, 6, 7]
+        group_expected = {1: "person", 2: "person", 3: "person",
+                          4: "data", 5: "data", 6: "data", 7: "formula"}
+        value_expected = {1: "last_name", 2: "first_name", 3: "id",
+                4: "", 5: "", 6: "", 7: "=SUM(D{row}:F{row})"}
         self.assertCountEqual(list(self.settings.columns.keys()), keys_expected)
         for key in keys_expected:
             col = self.settings.columns[key]
@@ -55,7 +55,7 @@ class ConfigTesterFixture(unittest.TestCase):
             self.assertEqual(pair[1], value_expected[pair[0]])
 
     def test_get_column_key(self):
-        self.assertEqual(self.settings.get_column_key("id"), "C")
+        self.assertEqual(self.settings.get_column_key("id"), 3)
         with self.assertRaises(ValueError):
             self.settings.get_column_key("town")
 

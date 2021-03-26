@@ -161,6 +161,7 @@ class TestWriterSimple(unittest.TestCase):
         self.cfg = Settings("test.ini")
         self.orig_openpyxl = fd.openpyxl
         fd.openpyxl = MockOpenpyxl()
+        fd.openpyxl.utils = self.orig_openpyxl.utils
 
     @classmethod
     def tearDownClass(self):
