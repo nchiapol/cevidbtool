@@ -11,6 +11,7 @@ config.py - classes to manage configuration
 
 """
 import configparser
+import openpyxl
 
 class ColConfig(object):
     """ object to represent column configuration
@@ -92,7 +93,7 @@ class Settings(object):
                     group = "formula"
                 else:
                     group = "person"
-            col_def[row[0].upper()] = ColConfig(group, row[1])
+            col_def[openpyxl.utils.column_index_from_string(row[0])] = ColConfig(group, row[1])
         self.columns = col_def
 
         #   create list of column keys: ['A', 'B', ...]

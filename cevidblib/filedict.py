@@ -49,7 +49,7 @@ def to_coord(col, row):
 
     """
     if type(col) == int:
-        col = openpyxl.cell.get_column_letter(col)
+        col = openpyxl.utils.get_column_letter(col)
     return "{0}{1}".format(col, row)
 
 class XlsxReader(object):
@@ -79,11 +79,13 @@ class XlsxReader(object):
                 int(pers_id)
             except (ValueError, TypeError):
                 break
-            selection = "{first}{row}:{last}{row}".format(
-               first=self._cfg.column_keys[0],
-               last=self._cfg.column_keys[-1], row=row
-            )
-            person = row2person(next(self.active.iter_rows(selection)))
+            selection = {
+                    "min_col": self._cfg.column_keys[0],
+                    "max_col": self._cfg.column_keys[-1],
+                    "min_row": row,
+                    "max_row": row
+                    }
+            person = row2person(next(self.active.iter_rows(**selection)))
             self._persons[pers_id] = person
             row += 1
         self._start_footer = row
@@ -158,7 +160,10 @@ class XlsxWriter(object):
         if dst == None:
             dst = src
         self._wb.active[dst].value = self._old_file.active[src].value
-        self._wb.active[dst].style = self._old_file.active[src].style
+        try:
+            self._wb.active[dst].style = self._old_file.active[src].style
+        except ValueError:
+            pass
 
     def copy_header(self):
         """ copy all header cells
