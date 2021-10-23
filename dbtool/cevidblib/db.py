@@ -12,7 +12,7 @@ db.py -- class to handel connection to CeviDB
 """
 
 import requests
-
+import os
 
 class RequestsError(Exception):
     """ Calls to handel exceptions raised inside requests """
@@ -45,7 +45,7 @@ class CeviDB(object):
     def __init__(self,
                  email,
                  db_root="https://db.cevi.ch",
-                 cert_file="cacert.pem"
+                 cert_file=None
                  ):
         """ initialise basic connection settings
 
@@ -57,7 +57,6 @@ class CeviDB(object):
             base url for database (default: https://db.cevi.ch)
         cert_file : string
             certificate file used for SSL verification including path
-            (default: 'cacert.pem')
             see set_cert_file() for details
 
         """
@@ -66,12 +65,14 @@ class CeviDB(object):
         self._email      = email
         self._auth_token = None
         self._id         = None
-        self._cert_file  = cert_file
+        self._cert_file  = None
+        self.set_cert_file(cert_file)
 
-    def set_cert_file(self, filename):
-        """ set a new certificate file used
+    def set_cert_file(self, filename=None):
+        """ set the certificate file used
 
-        No check is performed to assert that the file exists.
+        By default or if file does not exists, the root certificates
+        trusted by the system are used
 
         Parameters
         ----------
@@ -82,7 +83,12 @@ class CeviDB(object):
                 None -- use certificates installed on system
 
         """
-        self._cert_file = filename
+        if filename and os.path.isfile(filename):
+            self._cert_file = filename
+        #TODO:
+        # - functionality should probably be exposed via config
+        # - a missing file should at least trigger a warning
+        # - updat tests
 
     def set_auth_token(self, auth_token):
         """ set the authentication token
