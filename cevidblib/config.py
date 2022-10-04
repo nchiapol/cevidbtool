@@ -70,7 +70,7 @@ class Settings(object):
         if filename == None:
             filename = "config.ini"
         self._parser = configparser.RawConfigParser()
-        loaded = self._parser.read(filename)
+        loaded = self._parser.read(filename, encoding="utf-8")
         if len(loaded) == 0:
             raise IOError("Failed to load config file")
 
