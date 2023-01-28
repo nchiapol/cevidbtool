@@ -1,30 +1,24 @@
-CeviDB Tool
-===========
+Flask Interface for CeviDB-Tool
+===============================
 
-Das CeviDB Tool erlaubt es Listen mit den Mitgliedern
-von CeviDB-Gruppen zu führen, in denen zusätzliche
-Informationen zu den einzelnen Mitgliedern geführt werden.
-Das Tool aktualisiert die Adress-Daten der Mitglieder
-ohne die zusätzlichen Informationen zu verändern.
+This tool provides a webinterface for the cevidbtool.
+Using a webinterface simplifies maintenance and reduces
+the support needed for new regions wanting to use the tool.
 
-
-Installation
+Setup Debian
 ------------
+  - Install Flask and all dependencies via apt
+  - clone this repo into `/var/www/db2excel_flask`
+  - symlink:
+    - `/usr/share/javascript/bootstrap4` to `dbtool/static/bootstrap`
+    - `/usr/share/javascript/jquery` to `dbtool/static/jquery`
+  - setup apache2 vhost `db2excel` with pointing to `/var/www/db2excel_flask/wsgi/db2excel.wsgi`
+  - add cronjob for www-data `*/5  *  *  *  * cronic wget -q -O/dev/null db2excel.ceviregionzuerich.ch/cleanup`
+    (output to `/dev/null` needed, as wget can not store returned file)
 
-* Install Python, pip and pipenv for your OS (you most likely want to install python into `PATH`)
-* download/clone this repository
-* run `pipenv install -r requirements.txt` (you might need to adjust the version of `wxpython` if pipenv fails to build it)
-* run `pipenv run python cevidbtool.py` (or use the corresponding helper-script for your os)
-
-Nutzung
--------
-
-* Konfigurationsdatei config.ini erstellen
-  (vgl. examples/config.ini; groupid muss angepasst werden)
-* Tool starten (cevidbtool.py)
-* E-Mail-Adresse und Passwort eintragen
-* xlsx-Datei auswählen
-  (vgl. examples/spender.xlsx, zu examples/config.ini)
-* aktualisieren klicken und auf Bestätigung warten.
-
+Dependencies
+------------
+(probably incomplete)
+  - python3-openpyxl
+  - python3-flaskext.wtf
 

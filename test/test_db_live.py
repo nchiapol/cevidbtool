@@ -13,6 +13,7 @@ test_db_live.py -- test cases for cevidblib.db connecting to the live DB
 # ensure path is set correctly
 from  path_helper import add_path
 add_path()
+add_path("../dbtool")
 
 import unittest
 import cevidblib.db as cdb
@@ -39,7 +40,7 @@ Skipping Tests with Live DB as password file is missing!\n\
             raise unittest.SkipTest("Password file is missing.")
 
     def setUp(self):
-        self.db = cdb.CeviDB(self.user, self.url, "../cacert.pem")
+        self.db = cdb.CeviDB(self.user, self.url, None)
 
     def tearDown(self):
         del self.db

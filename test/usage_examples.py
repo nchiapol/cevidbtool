@@ -11,7 +11,7 @@ License: GNU General Public License version 3,
 
 from path_helper import add_path
 add_path()
-add_path("../imports")
+add_path("../dbtool")
 
 from cevidblib.config import Settings
 TEST_CFG = Settings("../examples/config.ini")

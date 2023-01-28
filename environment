@@ -1,0 +1,3 @@
+# use: . environment; flask run
+export FLASK_APP="dbtool"
+export FLASK_ENV="development"

@@ -13,7 +13,7 @@ test_filedict.py -- test cases for cevidblib.filedict
 # ensure path is set correctly
 from  path_helper import add_path
 add_path()
-add_path("../imports")
+add_path("../dbtool")
 
 import unittest
 import cevidblib.filedict as fd

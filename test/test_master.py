@@ -13,7 +13,7 @@ test_master.py -- test cases for cevidblib.master
 # ensure path is set correctly
 from path_helper import add_path
 add_path()
-add_path("../imports")
+add_path("../dbtool")
 
 import unittest
 import os

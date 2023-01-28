@@ -13,6 +13,7 @@ test_config.py -- test cases for cevidblib.config
 # ensure path is set correctly
 from  path_helper import add_path
 add_path()
+add_path("../dbtool")
 
 import unittest
 import cevidblib.config as cfg

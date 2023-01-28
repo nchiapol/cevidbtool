@@ -1,0 +1,19 @@
+{% extends 'base_bootstrap.html' %}
+
+{% block header %}
+  <h1>{% block title %}Update File{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data" action="#" class="container-fluid">
+    {{ form.csrf_token }}
+    {% for field in form if field.name != 'csrf_token' %}
+        <div class="row">
+            <div class="col-md form-group">
+                {{ field.label }} {{ field(class_="form-control") }}
+            </div>
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+{% endblock %}

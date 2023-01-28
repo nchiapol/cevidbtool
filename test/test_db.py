@@ -13,6 +13,7 @@ test_db.py -- test cases for cevidblib.db that work offline
 # ensure path is set correctly
 from path_helper import add_path
 add_path()
+add_path("../dbtool")
 
 import unittest
 import cevidblib.db as cdb
