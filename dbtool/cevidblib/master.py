@@ -43,7 +43,7 @@ class Master(object):
         """ object representing loaded configuration """
         return self._cfg
 
-    def backup_file(self, filename):
+    def backup_file(self, filename, protect=True):
         """ move existing data file to backup
 
         the passed file will be moved to a new name
@@ -65,7 +65,7 @@ class Master(object):
         basename = os.path.basename(filename)
         backup_base = time.strftime("%Y-%m-%d_")+basename
         backupname  = os.path.join(dirname, backup_base)
-        if os.path.exists(backupname):
+        if protect and os.path.exists(backupname):
             raise RuntimeError("Backup file exists already")
         os.rename(filename, backupname)
         self._backupname = backupname
@@ -80,6 +80,10 @@ class Master(object):
 
         """
         os.rename(self._backupname, self._filename)
+
+    def delete_backup(self):
+        """ delete backup file """
+        os.remove(self._backupname)
 
     def update_persons(self, list_file, list_db):
         """ merge person data from file and db
@@ -114,7 +118,7 @@ class Master(object):
             for key, field in self.cfg.pers_cols:
                 row_file[key] = row_db[field]
 
-    def run(self, filename, cert="cacert.pem"):
+    def run(self, filename, cert="cacert.pem", backup=True):
         """ main function for update
 
         Parameters
@@ -126,7 +130,7 @@ class Master(object):
             (default: 'cacert.pem' in the present working directory.)
 
         """
-        self.backup_file(filename)
+        self.backup_file(filename, protect=backup)
         try:
             self._reader = XlsxReader(self.cfg, self._backupname)
             persons_file = self._reader.persons
@@ -140,6 +144,10 @@ class Master(object):
             self._writer.fill(persons_file)
             self._writer.save()
         except Exception as e:
-            self.restore_backup()
+            if backup:
+                self.restore_backup()
             raise e
+        finally:
+            if not backup:
+                self.delete_backup()
 

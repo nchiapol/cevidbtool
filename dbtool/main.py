@@ -99,7 +99,7 @@ def index():
             file_.save(fullname)
             try:
                 master = Master(settings=Settings(current_app.config["USER"][user_]))
-                master.run(fullname, None)
+                master.run(fullname, cert=None, backup=False)
                 return send_file(fullname, as_attachment=True, download_name=filename)
             except Exception as e:
                 flash("Error: "+str(e.args), "danger")
@@ -124,8 +124,5 @@ def cleanup():
     return "OK"
 
 #TODO:
-#  - do not create backups: needs refactoring of master
-#    refactoring could maybe avoid saving completely?
-#  - delete files as soon as possible again
 #  - propper layout/css
 
