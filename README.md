@@ -22,3 +22,6 @@ Dependencies
   - python3-openpyxl
   - python3-flaskext.wtf
 
+Tests
+-----
+Most tests are currently outdated
