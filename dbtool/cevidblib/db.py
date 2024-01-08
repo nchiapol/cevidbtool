@@ -43,7 +43,7 @@ class CeviDB(object):
     """
 
     def __init__(self,
-                 email,
+                 token,
                  db_root="https://db.cevi.ch",
                  cert_file=None
                  ):
@@ -62,8 +62,7 @@ class CeviDB(object):
         """
         # ensure one trailing slash for db url
         self._db_root    = db_root.strip("/")+"/"
-        self._email      = email
-        self._auth_token = None
+        self._token      = token
         self._id         = None
         self._cert_file  = None
         self.set_cert_file(cert_file)
@@ -89,100 +88,6 @@ class CeviDB(object):
         # - functionality should probably be exposed via config
         # - a missing file should at least trigger a warning
         # - updat tests
-
-    def set_auth_token(self, auth_token):
-        """ set the authentication token
-
-        Useful if the token is known, no password is needed then.
-        No check is performed to ensure the token is valid.
-
-        Parameters
-        ----------
-        auth_token : string
-            authentication token
-
-        """
-        self._auth_token = auth_token
-
-    def _token_manager(self, action, password):
-        """ login to database and store authentication token
-
-        Parameters
-        ----------
-        action : TokenAction
-            configuration for requested action
-        password : string
-            password to use for login
-
-        Raises
-        ------
-        RequestsError
-            if certificate file is missing
-            or anything else goes wrong with the SSL connection
-        HTTPError
-            if a http error occured
-
-        """
-        url = self._db_root+action.end+".json"
-        url += "?person[email]={mail}&person[password]={pw}".format(
-                    mail=self._email,
-                    pw=password,
-                    )
-        res = action.func(url, verify=self._cert_file)
-        res.raise_for_status()
-        user = res.json()["people"][0]
-        self._auth_token = user["authentication_token"]
-        self._id = user["id"]
-
-    def connect(self, password):
-        """ alias for the default methode to obtain a token
-
-        use this function if your code does not require a specific
-        behaviour for token generation.
-
-        Parameters
-        ----------
-        password : string
-            password to use for login
-
-        """
-        self.generate_token(password)
-
-    def get_token(self, password):
-        """ get existing token or generate new one
-
-        Parameters
-        ----------
-        password : string
-            password to use for login
-
-        """
-        action = TokenAction(requests.post, "users/sign_in")
-        self._token_manager(action, password)
-
-    def delete_token(self, password):
-        """ delete existing token
-
-        Parameters
-        ----------
-        password : string
-            password to use for login
-
-        """
-        action = TokenAction(requests.delete, "users/token")
-        self._token_manager(action, password)
-
-    def generate_token(self, password):
-        """ generate new token, replacing an existing one
-
-        Parameters
-        ----------
-        password : string
-            password to use for login
-
-        """
-        action = TokenAction(requests.post, "users/token")
-        self._token_manager(action, password)
 
     def get_group_members(self, group_id):
         """ get list with all members of given group
@@ -265,15 +170,12 @@ class CeviDB(object):
             or the get request gets redirected too often
 
         """
-        if self._auth_token is None:
-            raise RuntimeError("Authentication token fehlt.")
         if endpoint[:len(self._db_root)] == self._db_root:
             url = endpoint
         else:
             url = self._db_root+endpoint
-        url += "?user_email={mail}&user_token={token}".format(
-                    mail=self._email,
-                    token=self._auth_token
+        url += "?token={token}".format(
+                    token=self._token
                     )
         if query_string is not None:
             url += "&"+query_string

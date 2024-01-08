@@ -1,23 +1,43 @@
 import os
 import logging
+import glob
+import configparser
 
 from flask import Flask
 
 def create_app(config = None):
     app = Flask(__name__, instance_relative_config=True)
+    app.logger.setLevel(logging.DEBUG)
+
 
     if config is None:
         app.config.from_pyfile("config.py")
     else:
         app.config.from_mapping(config)
 
+
+    app.config["USER"] = {}
+    for filename in glob.glob(os.path.join(app.instance_path, "*.ini")):
+        conf = configparser.ConfigParser()
+        conf.read(filename)
+        try:
+            users = conf.get("db", "allowed_users").split(",")
+        except (configparser.NoOptionError, configparser.NoSectionError):
+            app.logger.warning("Broken config file: %s (ignoring)", filename)
+            continue
+        for user in users:
+            if len(user) == 0:
+                continue
+            if user in app.config["USER"]:
+                app.logger.warning("User %s present in more then one config file. Ignoring %s", user, filename)
+            app.config["USER"][user] = filename
+
+
     app.config["TMP_PATH"] = os.path.join(app.instance_path, "tmp")
     try:
         os.makedirs(app.config["TMP_PATH"])
     except FileExistsError:
         pass
-
-    app.logger.setLevel(logging.DEBUG)
 
 
     from flask_login import LoginManager
@@ -47,5 +67,4 @@ def create_app(config = None):
         return user
 
     return app
-
 

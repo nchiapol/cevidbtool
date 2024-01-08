@@ -89,20 +89,24 @@ def handle_callback():
 def index():
     form = FileForm()
     if form.validate_on_submit():
-        user_ = form.user_.data
+        current_app.logger.debug("form submission valid")
+        user_ = current_user.id
         if user_ in current_app.config["USER"]:
+            current_app.logger.debug("user ok")
             file_ = form.file_.data
             filename = f"{user_}.xlsx"
             fullname = os.path.join(current_app.config["TMP_PATH"], filename)
             file_.save(fullname)
             try:
-                master = Master(settings=Settings(os.path.join(current_app.instance_path, current_app.config["USER"][user_])))
-                master.run(user_, form.pass_.data, fullname, None)
-                return send_file(fullname, attachment_filename=filename)
+                master = Master(settings=Settings(current_app.config["USER"][user_]))
+                master.run(fullname, None)
+                return send_file(fullname, as_attachment=True, download_name=filename)
             except Exception as e:
                 flash("Error: "+str(e.args), "danger")
             return redirect(url_for('main.index'))
         flash("Login failed", "warning")
+    else:
+        current_app.logger.error("invalid from submission")
     return render_template('main/page.html', form=form)
 
 @bp.route('/cleanup')
@@ -123,6 +127,5 @@ def cleanup():
 #  - do not create backups: needs refactoring of master
 #    refactoring could maybe avoid saving completely?
 #  - delete files as soon as possible again
-#  - think about setup that limits access
 #  - propper layout/css
 

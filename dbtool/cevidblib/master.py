@@ -114,15 +114,11 @@ class Master(object):
             for key, field in self.cfg.pers_cols:
                 row_file[key] = row_db[field]
 
-    def run(self, user, password, filename, cert="cacert.pem"):
+    def run(self, filename, cert="cacert.pem"):
         """ main function for update
 
         Parameters
         ----------
-        user: string
-            username for db
-        password: string
-            password for user
         filename: string
             file to update (including path)
         cert_file : string
@@ -135,8 +131,7 @@ class Master(object):
             self._reader = XlsxReader(self.cfg, self._backupname)
             persons_file = self._reader.persons
 
-            self._db     = CeviDB(user, self._cfg.db_url, cert)
-            self._db.connect(password)
+            self._db     = CeviDB(self._cfg.api_token, self._cfg.db_url, cert)
             persons_db   = self._db.get_group_members(self._cfg.group_id)
 
             self.update_persons(persons_file, persons_db)

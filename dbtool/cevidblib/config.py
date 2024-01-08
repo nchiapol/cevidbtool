@@ -76,8 +76,8 @@ class Settings(object):
 
         # parse simple config values
         self.db_url       = self._parser.get("db", "url")
-        self.default_mail = self._parser.get("db", "defaultmail")
-        self.group_id     = self._parser.getint("file", "groupid")
+        self.api_token       = self._parser.get("db", "api_token")
+        self.group_id     = self._parser.getint("db", "groupid")
         self.header_lines = self._parser.getint("file", "headerlines")
         self.footer_lines = self._parser.getint("file", "footerlines")
         self.freeze_column = self._parser.get("file", "freezecolumn")
