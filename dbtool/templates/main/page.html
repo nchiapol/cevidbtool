@@ -5,12 +5,24 @@
 {% endblock %}
 
 {% block content %}
-<div class="col-md">User: {{ current_user.id }}</div>
-<div class="col-md">Config: {{ config["USER"][current_user.id].split("/")[-1] }}</div>
-<form method="POST" enctype="multipart/form-data" action="#" class="container-fluid">
+
+<div class="container-fluid">
+<div class="mt-3 row">
+    <div class="col-md">
+        <label class="">User</label>
+        <div class="p-2 border">{{ current_user.id }}</div>
+    </div>
+</div>
+<div class="mt-3 row">
+    <div class="col-md">
+        <label class="">Config</label>
+        <div class="p-2 border">{{ config["USER"][current_user.id].split("/")[-1] }}</div>
+    </div>
+</div>
+<form method="POST" enctype="multipart/form-data" action="#" class="">
     {{ form.csrf_token }}
     {% for field in form if field.name != 'csrf_token' %}
-        <div class="row">
+        <div class="mt-3 row">
             <div class="col-md form-group">
                 {{ field.label }} {{ field(class_="form-control") }}
             </div>
@@ -18,4 +30,5 @@
     {% endfor %}
     <button type="submit" class="btn btn-primary">Update</button>
 </form>
+</div>
 {% endblock %}
