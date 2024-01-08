@@ -19,7 +19,7 @@ def create_app(config = None):
     app.config["USER"] = {}
     for filename in glob.glob(os.path.join(app.instance_path, "*.ini")):
         conf = configparser.ConfigParser()
-        conf.read(filename)
+        conf.read(filename, encoding="utf-8") # !! encoding must be specified
         try:
             users = conf.get("db", "allowed_users").split(",")
         except (configparser.NoOptionError, configparser.NoSectionError):
