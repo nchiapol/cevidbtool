@@ -8,7 +8,7 @@ from flask import (
     current_app,
     send_file
 )
-#from flask_login import login_required, current_user
+from flask_login import login_user, login_required, current_user, UserMixin
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileRequired, FileAllowed
 from wtforms import FileField, StringField, PasswordField
@@ -17,17 +17,75 @@ from .cevidblib.master import Master
 from .cevidblib.config import Settings
 import os
 import datetime
+import requests
+import json
+
 
 bp = Blueprint('main', __name__)
 
 class FileForm(FlaskForm):
     """ main form """
-    user_ = StringField("User", validators=[DataRequired()])
-    pass_ = PasswordField("Pass", validators=[DataRequired()])
+    #user_ = StringField("User", validators=[DataRequired()])
+    #pass_ = PasswordField("Pass", validators=[DataRequired()])
     file_ = FileField("Datei", validators=[FileRequired(), FileAllowed(['xlsx'], "Nur XLSX Dateien erlaubt")])
 
 
+class User(UserMixin):
+    pass
+
+@bp.route('/login')
+def oauth_login():
+    provider = current_app.config["OAUTH"]["provider"]
+    c_id = current_app.config["OAUTH"]["id"]
+    c_secret = current_app.config["OAUTH"]["secret"]
+    callback = url_for("main.handle_callback", _external=True)
+    current_app.logger.debug(callback)
+    return redirect(f"https://{provider}/oauth/authorize?response_type=code&client_id={c_id}&redirect_uri={callback}&scope=email")
+
+@bp.route('/oauth') #, methods=('GET', 'POST'))
+def handle_callback():
+    provider = current_app.config["OAUTH"]["provider"]
+    c_id = current_app.config["OAUTH"]["id"]
+    c_secret = current_app.config["OAUTH"]["secret"]
+    callback = url_for("main.handle_callback", _external=True)
+
+    current_app.logger.debug("in callback")
+    token_headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+    }
+    code = request.args.get("code")
+    token_data = "&".join([
+        'grant_type=authorization_code',
+        f'client_id={c_id}',
+        f'client_secret={c_secret}',
+        f'redirect_uri={callback}',
+        f'code={code}',
+        ])
+    res_token = requests.post(f'https://{provider}/oauth/token', headers=token_headers, data=token_data)
+    token = res_token.json()['access_token']
+    current_app.logger.debug("token: %s", token)
+
+    mail_headers = {
+        'Authorization': f"Bearer {token}",
+        'X-Scope': "email",
+    }
+    res_mail = requests.get(f'https://{provider}/oauth/profile', headers=mail_headers)
+    res_mail.raise_for_status()
+
+    user = User()
+    user.id = res_mail.json()['email']
+    current_app.logger.debug("user id: %s", user.id)
+    if user.id in current_app.config["USER"]:
+        login_user(user)
+        current_app.logger.debug("logged in, redirecting")
+        return redirect(url_for('main.index'))
+    current_app.logger.warning("login failed")
+    return "login failed"
+
+
 @bp.route('/', methods=('GET', 'POST'))
+@login_required
 def index():
     form = FileForm()
     if form.validate_on_submit():

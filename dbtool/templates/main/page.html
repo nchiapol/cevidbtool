@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+<div class="col-md">User: {{ current_user.id }}</div>
 <form method="POST" enctype="multipart/form-data" action="#" class="container-fluid">
     {{ form.csrf_token }}
     {% for field in form if field.name != 'csrf_token' %}
