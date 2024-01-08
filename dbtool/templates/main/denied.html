@@ -1,0 +1,9 @@
+{% extends 'base_bootstrap.html' %}
+
+{% block header %}
+  <h1>{% block title %}Access denied{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="alert alert-danger">{{ user }} not allowed</div>
+{% endblock %}

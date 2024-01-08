@@ -81,7 +81,7 @@ def handle_callback():
         current_app.logger.debug("logged in, redirecting")
         return redirect(url_for('main.index'))
     current_app.logger.warning("login failed")
-    return "login failed"
+    return render_template('main/denied.html', user=user.id)
 
 
 @bp.route('/', methods=('GET', 'POST'))
@@ -104,7 +104,6 @@ def index():
             except Exception as e:
                 flash("Error: "+str(e.args), "danger")
             return redirect(url_for('main.index'))
-        flash("Login failed", "warning")
     else:
         current_app.logger.error("invalid from submission")
     return render_template('main/page.html', form=form)
