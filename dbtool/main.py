@@ -81,7 +81,7 @@ def handle_callback():
         current_app.logger.debug("logged in, redirecting")
         return redirect(url_for('main.index'))
     current_app.logger.warning("login failed")
-    return render_template('main/denied.html', user=user.id)
+    return render_template('main/denied.html', user=user.id), 403
 
 
 @bp.route('/', methods=('GET', 'POST'))
